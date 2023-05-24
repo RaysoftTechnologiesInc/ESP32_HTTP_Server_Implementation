@@ -15,7 +15,7 @@
 #include "lwip/netdb.h"
 
 //#include "app_nvs.h"
-//#include "http_server.h"
+#include "http_server.h"
 #include "rgb_led.h"
 #include "tasks_common.h"
 #include "wifi_app.h"
@@ -130,8 +130,8 @@ static void wifi_app_soft_ap_config(void)
 
 	esp_netif_dhcps_stop(esp_netif_ap); //must call this first.
 	inet_pton(AF_INET, WIFI_AP_IP, &ap_ip_info.ip); //assign ap's static ip, gw and netmask.
-	inet_pton(AF_INET, WIFI_AP_IP, &ap_ip_info.gw);
-	inet_pton(AF_INET, WIFI_AP_IP, &ap_ip_info.netmask);
+	inet_pton(AF_INET, WIFI_AP_GATEWAY, &ap_ip_info.gw);
+	inet_pton(AF_INET, WIFI_AP_NETMASK, &ap_ip_info.netmask);
 	ESP_ERROR_CHECK(esp_netif_set_ip_info(esp_netif_ap, &ap_ip_info));//statically configure the network interface
 	ESP_ERROR_CHECK(esp_netif_dhcps_start(esp_netif_ap));//starts the ap dhcp server for connecting stations, eg mobile devices
 	ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_APSTA)); //setting mode as ap and station mode
@@ -162,13 +162,13 @@ static void wifi_app_task(void *pvParameters)
 			{
 				case WIFI_APP_MSG_START_HTTP_SERVER:
 					ESP_LOGI(TAG, "WIFI_APP_MSG_START_HTTP_SERVER");
-					//http_server_start;
+					http_server_start();
 					rgb_led_http_server_started();
 					break;
 
 				case WIFI_APP_MSG_CONNECTING_FROM_HTTP_SERVER:
 					ESP_LOGI(TAG, "WIFI_APP_MSG_CONNECTING_FROM_HTTP_SERVER");
-					//http_server_start;
+
 
 					break;
 
